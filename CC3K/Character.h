@@ -1,5 +1,6 @@
 #pragma once
 #include"Entity.h"
+#include"Floor.h"
 class Character : public Entity {
 private:
 	int iniHp;
@@ -9,7 +10,11 @@ private:
 	int curFloorAtkBoost;
 	int curFloorDefBoost;
 	bool isDead;
-	
+	Floor *f;
+
+protected:
+	virtual void combat(Character *enemy);
+
 public:
 	Character(int x, int y, char display, std::string type, int hp, int atk, int def);
 	int getHP();
@@ -19,8 +24,9 @@ public:
 	void changeCurFloorATKBoost(int atkBoost);
 	void changeCurFloorDEFBoost(int defBoost);
 	void restoreCurFloorBoost();
+	void setIsDead(bool isDead);
+	Floor* getFloor();
 	bool getIsDead();
-	virtual void combat(Character *enemy);
-	virtual void move();
+	virtual void update();
 
 };

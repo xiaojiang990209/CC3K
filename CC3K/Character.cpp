@@ -74,7 +74,53 @@ int Character::getDEF()
 	}
 }
 
+void Character::setIsDead(bool isDead)
+{
+	this->isDead = isDead;
+}
+
+Floor* Character::getFloor()
+{
+	return this->f;
+}
+
 bool Character::getIsDead()
 {
 	return this->isDead;
+}
+
+
+
+bool Character::update()
+{
+	//find enemy to attack
+	//for (int y = -1; y <= 1; y++)
+	//{
+	//	for (int x = -1; x <= 1; x++)
+	//	{
+	//		if (x == 0 && y == 0)continue;
+	//		//if there is enemy on one of the 8 grids surrounding the character
+	//		if (this->findEnemy(this->getX() + x, this->getY() + y))
+	//		{
+	//			//locate the enemy in the characterList of the chambers
+	//			//then combat that enemy.
+	//			this->combat(this->f->getCharacterFromChamber(x, y));
+	//		}
+	//	}
+	//}
+
+	//find item to use (potion to use, treasure to collect)
+	//This part only for goblin.
+	/*for (int y = -1; y <= 1; y++)
+	{
+		for (int x = -1; x <= 1; x++)
+		{
+			if (x == 0 && y == 0)continue;
+
+		}
+	}*/
+
+	//no item and no potion, then move randomly.
+	
+	//return true;
 }

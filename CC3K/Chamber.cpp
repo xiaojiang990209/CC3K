@@ -51,7 +51,7 @@ void Chamber::updateChamber()
 
 bool Chamber::isInChamber(int x, int y)
 {
-
+	return this->xBoundaries[y].first < x&&x < this->xBoundaries.at(y).second;
 }
 
 bool Chamber::hasPlayer()
