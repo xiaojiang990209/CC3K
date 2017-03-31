@@ -13,20 +13,20 @@ private:
 	Floor *f;
 
 protected:
-	virtual void combat(Character *enemy);
-
+	void combat(Character *enemy);
+	void changeHP(int hp);
+	void changeCurFloorATKBoost(int atkBoost);
+	void changeCurFloorDEFBoost(int defBoost);
+	void restoreCurFloorBoost();
 public:
 	Character(int x, int y, char display, std::string type, int hp, int atk, int def);
 	int getHP();
 	int getATK();
 	int getDEF();
-	void changeHP(int hp);
-	void changeCurFloorATKBoost(int atkBoost);
-	void changeCurFloorDEFBoost(int defBoost);
-	void restoreCurFloorBoost();
-	void setIsDead(bool isDead);
-	Floor* getFloor();
 	bool getIsDead();
+	void setIsDead(bool isDead);
+	void usePotion(Potion *p);
+	Floor* getFloor();
 	virtual void update();
 
 };

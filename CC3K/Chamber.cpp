@@ -54,12 +54,48 @@ bool Chamber::isInChamber(int x, int y)
 	return this->xBoundaries[y].first < x&&x < this->xBoundaries.at(y).second;
 }
 
-bool Chamber::hasPlayer()
+bool Chamber::getHasPlayer()
 {
 	return this->hasPlayer;
 }
 
-bool Chamber::hasStairs()
+bool Chamber::getHasStairs()
 {
 	return this->hasStairs;
+}
+
+Character* Chamber::getCharacter(int x, int y)
+{
+	for (Character *c : this->characterList)
+	{
+		if (c->getY() == y&&c->getX() == x)
+		{
+			return c;
+		}
+	}
+	return nullptr;
+}
+
+Potion* Chamber::getPotion(int x, int y)
+{
+	for (Potion *p : this->potionList)
+	{
+		if (p->getY() == y&&p->getX() == x)
+		{
+			return p;
+		}
+	}
+	return nullptr;
+}
+
+Treasure* Chamber::getTreasure(int x, int y)
+{
+	for (Treasure *t : this->treasureList)
+	{
+		if (t->getY() == y&&t->getX() == x)
+		{
+			return t;
+		}
+	}
+	return nullptr;
 }

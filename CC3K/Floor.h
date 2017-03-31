@@ -9,19 +9,23 @@ class Floor
 {
 private:
 	Floor *f;
-	Player* p;
+	Player *p;
 	std::vector<std::string> initMap;
 	std::vector<std::string> map;
 	std::vector<Chamber*> chambers;
 	int level;
-	Entity stair;
+	Entity *stair;
 	Floor();
 	void spawnPlayer();
 	void spawnStairs();
 	void generateFloor();
 public:
 	static Floor* getInstance();
+	void outputFloor();
 	Player* getPlayer();
+	void initMap(std::vector<std::string> map);
 	std::vector<std::string>& getMap();
-	Chamber* getChamberFromCoordinate(int x, int y);
+	Character* getEnemyFromCoordinate(int x, int y);
+	Potion* getPotionFromCoordinate(int x, int y);
+	Treasure* getTreasureFromCoordinate(int x, int y);
 };

@@ -6,6 +6,7 @@
 #include<fstream>
 #include<string>
 #include<vector>
+#include"Floor.h"
 
 using namespace std;
 
@@ -15,7 +16,7 @@ void movePlayer(int iniX, int iniY, int x, int y, vector<string> &floor, vector<
 
 int main()
 {
-	vector<string> defaultFloor = readFile("defaultLevel.txt");
+	/*vector<string> defaultFloor = readFile("defaultLevel.txt");
 	vector<string> floor(defaultFloor);
 
 	int x = 9;
@@ -74,6 +75,26 @@ int main()
 		x += addX;
 		y += addY;
 		system("cls");
+	}*/
+
+	cout << "Welcome to CC3K. Choose your race:" << endl;
+	cout << "1: Knight. 2: Wizard. 3: Goblin." << endl;
+
+	//Initialize floor in constructor
+	
+	Floor *floor = Floor::getInstance();
+	while (true)
+	{
+		//更新Floor以及Floor里的map
+		//Floor更新里有每个Chamber的更新
+		floor->update();
+		//打印出当前Floor的map
+		floor->outputFloor();
+		//打印出TextPanel
+		floor->outputTextPanel();
+		//调用Player的update()， 询问Player的下一步
+		floor->getPlayer()->update();
+
 	}
 
 
@@ -104,14 +125,7 @@ vector<string> readFile(string url)
 
 void drawFloor(vector<string> &floor)
 {
-	for (int i = 0; i < floor.size(); i++)
-	{
-		for (int j = 0; j < floor[0].length(); j++)
-		{
-			cout << floor[i][j];
-		}
-		cout << endl;
-	}
+	
 }
 
 void movePlayer(int iniX, int iniY, int x, int y, vector<string> &floor,vector<string> &defaultFloor)

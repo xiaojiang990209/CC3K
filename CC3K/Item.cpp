@@ -12,8 +12,8 @@ bool Item::getIsUsed()
 	return this->isUsed;
 }
 
-void Item::effect()
+void Item::setIsUsed(bool isUsed)
 {
-
+	this->isUsed = isUsed;
 }
 

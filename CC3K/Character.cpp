@@ -43,11 +43,6 @@ void Character::combat(Character *enemy)
 	}
 }
 
-void Character::move()
-{
-
-}
-
 int Character::getHP()
 {
 	return this->hp;
@@ -89,38 +84,15 @@ bool Character::getIsDead()
 	return this->isDead;
 }
 
-
-
-bool Character::update()
+void Character::usePotion(Potion *p)
 {
-	//find enemy to attack
-	//for (int y = -1; y <= 1; y++)
-	//{
-	//	for (int x = -1; x <= 1; x++)
-	//	{
-	//		if (x == 0 && y == 0)continue;
-	//		//if there is enemy on one of the 8 grids surrounding the character
-	//		if (this->findEnemy(this->getX() + x, this->getY() + y))
-	//		{
-	//			//locate the enemy in the characterList of the chambers
-	//			//then combat that enemy.
-	//			this->combat(this->f->getCharacterFromChamber(x, y));
-	//		}
-	//	}
-	//}
+	p->setIsUsed(true);
+	this->changeCurFloorATKBoost(p->getAtkEffect());
+	this->changeCurFloorDEFBoost(p->getDefEffect());
+	this->changeHP(p->getHpEffect());
+}
 
-	//find item to use (potion to use, treasure to collect)
-	//This part only for goblin.
-	/*for (int y = -1; y <= 1; y++)
-	{
-		for (int x = -1; x <= 1; x++)
-		{
-			if (x == 0 && y == 0)continue;
+void Character::update()
+{
 
-		}
-	}*/
-
-	//no item and no potion, then move randomly.
-	
-	//return true;
 }

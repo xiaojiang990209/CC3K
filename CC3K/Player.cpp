@@ -22,7 +22,53 @@ void Player::setGold(int gold)
 	this->gold = gold;
 }
 
+void Player::update()
+{
+
+}
+
+
+
+
+//----------------------------------------------------------------------------------------------
+//Knight¿‡
 Knight::Knight(int x, int y) :Player(x, y, "Knight", 100, 50, 50)
+{
+
+}
+
+void Knight::update()
+{
+
+}
+
+
+
+
+//----------------------------------------------------------------------------------------------
+//Wizard¿‡
+Wizard::Wizard(int x, int y) :Player(x, y, "Wizard", 60, 25, 0)
+{
+
+}
+
+void Wizard::update()
+{
+
+}
+
+
+
+
+
+//----------------------------------------------------------------------------------------------
+//Samurai¿‡
+Samurai::Samurai(int x, int y) :Player(x, y, "Samurai", 80, 50, 15)
+{
+
+}
+
+void Samurai::update()
 {
 
 }

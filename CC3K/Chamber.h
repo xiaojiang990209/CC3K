@@ -26,7 +26,14 @@ public:
 	void addPotion(Potion *p);
 	void addTreasure(Treasure *t);
 	void updateChamber();
+	int getLength();
+	int getWidth();
+	void setHasPlayer(bool hasPlayer);
+	void setHasStairs(bool hasStairs);
 	bool isInChamber(int x, int y);
-	bool hasPlayer();
-	bool hasStairs();
+	bool getHasPlayer();
+	bool getHasStairs();
+	Character* getCharacter(int x, int y);
+	Potion* getPotion(int x, int y);
+	Treasure* getTreasure(int x, int y);
 };

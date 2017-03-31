@@ -6,9 +6,9 @@
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 //Enemy类
-Enemy::Enemy(int x, int y, char display, std::string type, int hp, int atk, int def):Character(x,y,display,type, hp, atk, def)
+Enemy::Enemy(int x, int y, char display, std::string type, int hp, int atk, int def, bool isHostile):Character(x,y,display,type, hp, atk, def)
 {
-	
+	this->isHostile = isHostile;
 }
 
 bool Enemy::findEnemy(int x, int y)
@@ -43,6 +43,16 @@ bool Enemy::attackPlayer()
 	return false;
 }
 
+bool Enemy::getIsHostile()
+{
+	return this->isHostile;
+}
+
+void Enemy::setIsHostile(bool isHostile)
+{
+	this->isHostile = isHostile;
+}
+
 /***********************************************************************************************************
 
 	drinkPotion() 未完成实现
@@ -66,8 +76,9 @@ bool Enemy::drinkPotion()
 						c. 把potion的数值加到character上：curFloor{HP|ATK|DEF}Boost()
 						d. 把potion的isUsed设置成true，这样chamber的update()可以把这个potion从potionList中删去
 
-
 				*/
+				Potion *p = this->getFloor()->getPotionFromCoordinate(this->getX() + x, this->getY() + y);
+				this->usePotion(p);
 			}
 		}
 	}
@@ -110,11 +121,16 @@ void Enemy::moveRandomly()
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 //GridBug类
-GridBug::GridBug(int x, int y) :Enemy(x, y, 'X', "GridBug", 50, 20, 10)
+GridBug::GridBug(int x, int y) :Enemy(x, y, 'X', "GridBug", 50, 20, 10, true)
 {
 
 }
 
+
+/*
+	因为GridBug设定，不能斜着移动和攻击，所以他的attackPlayer()和moveRandomly()得重写
+	为了去禁止他的斜向运动和攻击
+*/
 bool GridBug::attackPlayer()
 {
 	Player *p = this->getFloor()->getPlayer();
@@ -192,7 +208,7 @@ void GridBug::update()
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
 //Goblin类
-Goblin::Goblin(int x, int y) :Enemy(x, y, 'g', "Goblin", 75, 30, 20)
+Goblin::Goblin(int x, int y) :Enemy(x, y, 'g', "Goblin", 75, 30, 20, true)
 {
 
 }
@@ -220,4 +236,64 @@ void Goblin::update()
 
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
-//
+//Merchant类
+Merchant::Merchant(int x, int y) : Enemy(x, y, 'M', "Merchant", 100, 75, 5, false)
+{
+
+}
+
+/*
+	执行顺序：
+		1. 如果对Player有敌意，且有Player攻击，攻击Player
+		2. 如果对Player没有敌意，或者没有找到Player攻击，则随机移动
+*/
+void Merchant::update()
+{
+	bool skipMove = false;
+	//如果对Player有敌意，则尝试攻击Player
+	if (this->getIsHostile())
+	{
+		skipMove = Enemy::attackPlayer();
+	}
+	//如果已经攻击成功，则跳过移动
+	if (!skipMove)
+	{
+		Enemy::moveRandomly();
+	}
+}
+
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+//Orc类
+Orc::Orc(int x, int y) :Enemy(x, y, 'O', "Orc", 120, 30, 30, true)
+{
+
+}
+
+void Orc::update()
+{
+	if (!Enemy::attackPlayer())
+	{
+		Enemy::moveRandomly();
+	}
+}
+
+
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+//Dragon类
+Dragon::Dragon(int x, int y) :Enemy(x, y, 'D', "Dragon", 150, 50, 10, true)
+{
+
+}
+
+/*
+	因为Dragon只守卫Dragon Hoard，并且不会离开它
+	所以Dragon的update()里面只有攻击Player，没有随机移动
+*/
+void Dragon::update()
+{
+	Enemy::attackPlayer();
+}

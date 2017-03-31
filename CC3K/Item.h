@@ -7,5 +7,5 @@ private:
 public:
 	Item(int x, int y, char display, std::string type);
 	bool getIsUsed();
-	virtual void effect();
+	void setIsUsed(bool isUsed);
 };

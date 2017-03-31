@@ -10,7 +10,9 @@ private:
 	bool isPositive;
 public:
 	Potion(int x, int y, std::string type, int hpEffect, int atkEffect, int defEffect, bool isPositive);
-	void effect(Character *c);
+	int getHpEffect();
+	int getAtkEffect();
+	int getDefEffect();
 };
 
 class RestoreHealthPotion: public Potion

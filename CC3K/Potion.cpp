@@ -7,12 +7,27 @@ Potion::Potion(int x, int y, std::string type, int hpEffect, int atkEffect, int 
 	this->defEffect = defEffect;
 	this->isPositive = isPositive;
 }
+//
+//void Potion::effect(Character *c)
+//{
+//	c->changeHP(this->hpEffect);
+//	c->changeCurFloorATKBoost(this->atkEffect);
+//	c->changeCurFloorDEFBoost(this->defEffect);
+//}
 
-void Potion::effect(Character *c)
+int Potion::getHpEffect()
 {
-	c->changeHP(this->hpEffect);
-	c->changeCurFloorATKBoost(this->atkEffect);
-	c->changeCurFloorDEFBoost(this->defEffect);
+	return this->hpEffect;
+}
+
+int Potion::getAtkEffect()
+{
+	return this->atkEffect;
+}
+
+int Potion::getDefEffect()
+{
+	return this->defEffect;
 }
 
 RestoreHealthPotion::RestoreHealthPotion(int x, int y) :Potion(x, y, "RestoreHealth", 30, 0, 0, true)
