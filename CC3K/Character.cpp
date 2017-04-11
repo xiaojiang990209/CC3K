@@ -1,20 +1,32 @@
 #include"Character.h"
+#include"TextPanel.h"
+#include"Potion.h"
 #include<cmath>
+#include<iostream>
 
 Character::Character(int x, int y, char display, std::string type, int hp, int atk, int def):Entity(x,y,display,type) 
 {
-	this->iniHp = hp;
+	this->initHp = hp;
 	this->hp = hp;
 	this->atk = atk;
 	this->def = def;
+	this->curFloorAtkBoost = 0;
+	this->curFloorDefBoost = 0;
 	this->isDead = false;
 }
 
 void Character::changeHP(int hp)
 {
-	if (this->hp += hp > this->iniHp)
+	//If the hp after is greater than the initial hp, then
+	//the hp is the initial hp
+	if (this->hp + hp > this->initHp)
 	{
-		this->hp = this->iniHp;
+		this->hp = this->initHp;
+	}
+	//else treat it the normal way
+	else
+	{
+		this->hp += hp;
 	}
 }
 
@@ -36,16 +48,36 @@ void Character::restoreCurFloorBoost()
 
 void Character::combat(Character *enemy)
 {
-	changeHP(-ceil(enemy->getATK()*(100.0-this->getDEF())/100.0));
-	if (this->hp <= 0)
+	//检测对象
+	//如果攻击对象（this）是Player，则主语为you
+	//否则，被攻击对象为Player，主语为攻击对象（enemy）的类型
+
+	int damage = -ceil(this->getATK()*(100.0 - enemy->getDEF()) / 100.0);
+	enemy->changeHP(damage);
+	if (enemy->getHP() <= 0)
 	{
-		this->isDead = true;
+		enemy->setIsDead(true);
+	}
+	//若攻击对象的display:char 为‘@’，则代表攻击对象为Player
+	if (this->getDisplay() == '@')
+	{
+		TextPanel::appendMessage("You attack the " + enemy->getType() + " for " + std::to_string(-damage) + "damage!\n");
+	}
+	//否则，更换主语为Enemy的类型，宾语为You（player）
+	else
+	{
+		TextPanel::appendMessage(this->getType() + " attacks you for " + std::to_string(-damage) + " damage!\n");
 	}
 }
 
 int Character::getHP()
 {
 	return this->hp;
+}
+
+int Character::getInitHp()
+{
+	return this->initHp;
 }
 
 int Character::getATK()
@@ -72,11 +104,6 @@ int Character::getDEF()
 void Character::setIsDead(bool isDead)
 {
 	this->isDead = isDead;
-}
-
-Floor* Character::getFloor()
-{
-	return this->f;
 }
 
 bool Character::getIsDead()

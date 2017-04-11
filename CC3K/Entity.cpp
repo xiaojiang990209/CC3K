@@ -32,3 +32,8 @@ char Entity::getDisplay()
 {
 	return this->display;
 }
+
+std::string Entity::getType()
+{
+	return this->type;
+}

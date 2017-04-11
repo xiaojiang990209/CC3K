@@ -1,18 +1,16 @@
 #pragma once
-#include"Player.h"
+#include"Floor.h"
 #include<string>
 class TextPanel
 {
 private:
-	int level;
-	Player *p;
-	std::string message;
+	static std::string message;
 public:
-	TextPanel(int level, Player *p);
-	//设定当前处在几楼
-	int setLevel(int level);
+	TextPanel();
 	//设置当前一轮要显示的信息
-	void appendMessage(std::string message);
+	static void appendMessage(std::string message);
+	//显示Player的各种信息
+	static void outputStates();
 	//显示当前一轮显示的信息
-	void update();
+	static void outputMessage();
 };

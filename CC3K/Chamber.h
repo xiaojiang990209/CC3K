@@ -1,6 +1,7 @@
 #pragma once
-#include"Entity.h"
 #include"Character.h"
+#include"Entity.h"
+
 #include"Potion.h"
 #include"Treasure.h"
 #include<vector>
@@ -20,20 +21,23 @@ private:
 	void updateCharacterList();
 	void updatePotionList();
 	void updateTreasureList();
+	void initXBoundaries(int chamberIndex);
 public:
-	Chamber(int x, int y, int length, int width);
+	Chamber(int x, int y, int length, int width, int chamberIndex);
+	void initChamber();
 	void addCharacter(Character *c);
 	void addPotion(Potion *p);
 	void addTreasure(Treasure *t);
-	void updateChamber();
+	bool isInChamber(int x, int y);
 	int getLength();
 	int getWidth();
-	void setHasPlayer(bool hasPlayer);
-	void setHasStairs(bool hasStairs);
-	bool isInChamber(int x, int y);
 	bool getHasPlayer();
 	bool getHasStairs();
+	void setHasPlayer(bool hasPlayer);
+	void setHasStairs(bool hasStairs);
 	Character* getCharacter(int x, int y);
 	Potion* getPotion(int x, int y);
 	Treasure* getTreasure(int x, int y);
+	void updateChamber();
+
 };

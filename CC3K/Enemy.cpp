@@ -1,7 +1,9 @@
 #include "Enemy.h"
+#include"Floor.h"
 #include<vector>
 #include<utility>
 #include<cstdlib>
+#include<iostream>
 
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------
@@ -13,34 +15,8 @@ Enemy::Enemy(int x, int y, char display, std::string type, int hp, int atk, int 
 
 bool Enemy::findEnemy(int x, int y)
 {
-	char c = this->getFloor()->getMap()[y][x];
+	char c = Floor::getInstance()->getMap()[y][x];
 	return c == '@';
-}
-
-bool Enemy::findPotion(int x, int y)
-{
-	char c =this->getFloor()->getMap()[y][x];
-	return c == '!';
-}
-
-bool Enemy::attackPlayer()
-{
-	Player *p = this->getFloor()->getPlayer();
-	//循环自己周围的8个位置
-	for (int x = -1; x <= 1; x++)
-	{
-		for (int y = -1; y <= 1; y++)
-		{
-			//如果是自己本身，跳过
-			if ((x == 0 && y == 0)) continue;
-			if ((this->getX() + x) == p->getX() && (this->getY() + y) == p->getY())
-			{
-				this->combat(p);
-				return true;
-			}
-		}
-	}
-	return false;
 }
 
 bool Enemy::getIsHostile()
@@ -53,6 +29,39 @@ void Enemy::setIsHostile(bool isHostile)
 	this->isHostile = isHostile;
 }
 
+bool Enemy::findPotion(int x, int y)
+{
+	char c =Floor::getInstance()->getMap()[y][x];
+	return c == '!';
+}
+
+bool Enemy::attackPlayer()
+{
+	//如果enemy对Player没有敌意，则不攻击，则返回false代表攻击不成功
+	if (!this->getIsHostile()) return false;
+	Player *p = Floor::getInstance()->getPlayer();
+	if (!p->getIsVisible()) return false;
+	//std::cout << "In attack Player!" << std::endl;
+
+	//循环自己周围的8个位置
+	for (int x = -1; x <= 1; x++)
+	{
+		for (int y = -1; y <= 1; y++)
+		{
+			//如果是自己本身，跳过
+			if ((x == 0 && y == 0)) continue;
+			//std::cout << this->getX() << ' ' << this->getY() << ' ' << x << ' ' << y << ' ' << p->getX() << ' ' << p->getY() << std::endl;
+
+			if ((this->getX() + x) == p->getX() && (this->getY() + y) == p->getY())
+			{
+				this->combat(p);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 /***********************************************************************************************************
 
 	drinkPotion() 未完成实现
@@ -60,7 +69,7 @@ void Enemy::setIsHostile(bool isHostile)
 */
 bool Enemy::drinkPotion()
 {
-	std::vector<std::string> map = this->getFloor()->getMap();
+	std::vector<std::string> map = Floor::getInstance()->getMap();
 	for (int x = -1; x <= 1; x++)
 	{
 		for (int y = -1; y <= 1; y++)
@@ -77,16 +86,18 @@ bool Enemy::drinkPotion()
 						d. 把potion的isUsed设置成true，这样chamber的update()可以把这个potion从potionList中删去
 
 				*/
-				Potion *p = this->getFloor()->getPotionFromCoordinate(this->getX() + x, this->getY() + y);
+				Potion *p = Floor::getInstance()->getPotionFromCoordinate(this->getX() + x, this->getY() + y);
 				this->usePotion(p);
+				return true;
 			}
 		}
 	}
+	return false;
 }
 
 void Enemy::moveRandomly()
 {
-	std::vector<std::string> map = this->getFloor()->getMap();
+	std::vector<std::string> map = Floor::getInstance()->getMap();
 	std::vector<std::pair<int, int> > possibleNextSteps;
 	for (int x = -1; x <= 1; x++)
 	{
@@ -107,12 +118,12 @@ void Enemy::moveRandomly()
 		//随机获取一个pair<int, int> 作为下一步的位置
 		std::pair<int, int> nextStep = possibleNextSteps[rand() % possibleNextSteps.size()];
 		//将map之前的x,y位置改成 '.'
-		map[this->getY()][this->getX()] = '.';
+		Floor::getInstance()->getMap()[this->getY()][this->getX()] = '.';
 		//更新x,y值
 		this->setX(this->getX() + nextStep.first);
 		this->setY(this->getY() + nextStep.second);
 		//更新map上的新x,y位置为Gridbug的图标
-		map[this->getY()][this->getX()] = this->getDisplay();
+		Floor::getInstance()->getMap()[this->getY()][this->getX()] = this->getDisplay();
 
 	}
 }
@@ -133,17 +144,18 @@ GridBug::GridBug(int x, int y) :Enemy(x, y, 'X', "GridBug", 50, 20, 10, true)
 */
 bool GridBug::attackPlayer()
 {
-	Player *p = this->getFloor()->getPlayer();
+	//如果enemy对Player没有敌意，则不攻击，则返回false代表攻击不成功
+	if (!this->getIsHostile()) return false;
+	Player *p = Floor::getInstance()->getPlayer();
+	if (!p->getIsVisible()) return false;
+	//std::cout << "In gridbug attack Player!" << std::endl;
 	for (int x = -1; x <= 1; x++)
 	{
 		for (int y = -1; y <= 1; y++)
 		{
 			//因为cannot attack or move diagonally.
 			if ((x == 0 && y == 0) || (x == 1 && y == 1) || (x == 1 && y == -1) || (x == -1 && y == 1) || (x == -1 && y == -1)) continue;
-			/*if (this->findEnemy(this->getX()+x, this->getY()+y))
-			{
-
-			}*/
+			//std::cout << this->getX() << ' ' << this->getY() << ' ' << x << ' ' << y << ' ' << p->getX() << ' ' << p->getY() << std::endl;
 			if ((this->getX() + x) == p->getX() && (this->getY() + y) == p->getY())
 			{
 				this->combat(p);
@@ -156,7 +168,7 @@ bool GridBug::attackPlayer()
 
 void GridBug::moveRandomly()
 {
-	std::vector<std::string> map = this->getFloor()->getMap();
+	std::vector<std::string> map = Floor::getInstance()->getMap();
 	std::vector<std::pair<int, int> > possibleNextSteps;
 	for (int x = -1; x <= 1; x++)
 	{
@@ -176,12 +188,12 @@ void GridBug::moveRandomly()
 		//随机获取一个pair<int, int> 作为下一步的位置
 		std::pair<int, int> nextStep = possibleNextSteps[rand() % possibleNextSteps.size()];
 		//将map之前的x,y位置改成 '.'
-		map[this->getY()][this->getX()] = '.';
+		Floor::getInstance()->getMap()[this->getY()][this->getX()] = '.';
 		//更新x,y值
 		this->setX(this->getX() + nextStep.first);
 		this->setY(this->getY() + nextStep.second);
 		//更新map上的新x,y位置为Gridbug的图标
-		map[this->getY()][this->getX()] = this->getDisplay();
+		Floor::getInstance()->getMap()[this->getY()][this->getX()] = this->getDisplay();
 
 	}
 }
@@ -249,15 +261,12 @@ Merchant::Merchant(int x, int y) : Enemy(x, y, 'M', "Merchant", 100, 75, 5, fals
 */
 void Merchant::update()
 {
-	bool skipMove = false;
-	//如果对Player有敌意，则尝试攻击Player
-	if (this->getIsHostile())
+	//如果Enemy::attackPlayer执行返回false，则代表：
+	//		1. Merchant对Player没有敌意
+	//		2. Merchant找不到Player攻击
+	if (!Enemy::attackPlayer())
 	{
-		skipMove = Enemy::attackPlayer();
-	}
-	//如果已经攻击成功，则跳过移动
-	if (!skipMove)
-	{
+		//如果已经攻击成功，则跳过移动
 		Enemy::moveRandomly();
 	}
 }

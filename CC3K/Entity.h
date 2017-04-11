@@ -13,4 +13,5 @@ public:
 	int getX();
 	int getY();
 	char getDisplay();
+	std::string getType();
 };
