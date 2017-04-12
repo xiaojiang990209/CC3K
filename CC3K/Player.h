@@ -7,6 +7,10 @@ private:
 	bool isVisible;
 	int gold;
 	int score;
+	bool stopwander;
+	bool stopdeath;
+	bool quit;
+	bool restart;
 	void directionIntepreter(std::string dir, int &x, int &y);
 protected:
 	virtual bool attackPlayer(int x, int y);
@@ -20,6 +24,10 @@ public:
 	int getGold();
 	int getScore();
 	void setGold(int gold);
+	bool getStopWander();
+	bool getStopDeath();
+	bool getQuit();
+	bool getRestart();
 	void update();
 };
 

@@ -9,6 +9,10 @@ Player::Player(int x, int y, std::string type, int hp, int atk, int def, bool is
 	this->isVisible = isVisible;
 	this->gold = 0;
 	this->score = 0;
+	this->stopwander = false;
+	this->stopdeath = false;
+	this->quit = false;
+	this->restart = false;
 }
 
 bool Player::attackPlayer(int x, int y)
@@ -150,6 +154,26 @@ void Player::directionIntepreter(std::string dir, int &x, int &y)
 }
 
 
+bool Player::getStopWander()
+{
+	return this->stopwander;
+}
+
+bool Player::getStopDeath()
+{
+	return this->stopdeath;
+}
+
+bool Player::getRestart()
+{
+	return this->restart;
+}
+
+bool Player::getQuit()
+{
+	return this->quit;
+}
+
 void Player::update()
 {
 	std::string dir, line;
@@ -158,7 +182,27 @@ void Player::update()
 	{
 		std::cout << "What will you do ?" << std::endl;
 		getline(std::cin, line);
-		if (line[0] == 'a')
+		if (line[0] == 'r')
+		{
+			this->restart = true;
+			return;
+		}
+		else if (line[0] == 'q')
+		{
+			this->quit = true;
+			return;
+		}
+		else if (line == "stopwander")
+		{
+			this->stopwander = true;
+			return;
+		}
+		else if (line == "stopdeath")
+		{
+			this->stopdeath = true;
+			return;
+		}
+		else if (line[0] == 'a')
 		{
 			//Known command, now get direction
 			std::stringstream ss(line);
@@ -197,9 +241,7 @@ void Player::update()
 		}
 		else
 		{
-			//std::cout << line << std::endl;
 			dir = line;
-			//std::cout << dir << std::endl;
 			this->directionIntepreter(dir, x, y);
 			if (this->move(x, y))
 			{
@@ -221,7 +263,7 @@ void Player::update()
 
 //----------------------------------------------------------------------------------------------
 //Knight¿‡
-Knight::Knight(int x, int y) :Player(x, y, "Knight", 500, 500, 50, true)
+Knight::Knight(int x, int y) :Player(x, y, "Knight", 100, 50, 50, true)
 {
 
 }

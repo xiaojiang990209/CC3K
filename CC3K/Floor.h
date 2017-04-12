@@ -17,7 +17,7 @@ private:
 	int level;
 	Entity *stair;
 	Floor();
-	
+	~Floor();
 	void randomizeObjectLocation(int &x, int &y, Chamber *&c);
 	void spawnPlayer();
 	void spawnStairs();
@@ -26,8 +26,11 @@ private:
 	void generateGoldPile();
 	void generateEnemy(int enemyIndex);
 	void generateFloor();
+	std::string commandIntepreter();
 public:
 	static Floor* getInstance();
+	static void resetInstance();
+	
 	Player* getPlayer();
 	void setPlayer(Player *p);
 	int getLevel();
@@ -40,4 +43,5 @@ public:
 	void outputFloor();
 	void initFloor();
 	void update();
+	
 };

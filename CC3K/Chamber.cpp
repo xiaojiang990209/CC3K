@@ -10,6 +10,13 @@ Chamber::Chamber(int x, int y, int length, int width, int chamberIndex) :Entity(
 	this->initXBoundaries(chamberIndex);
 }
 
+Chamber::~Chamber()
+{
+	characterList.clear();
+	potionList.clear();
+	treasureList.clear();
+}
+
 void Chamber::initXBoundaries(int chamberIndex)
 {
 	switch (chamberIndex)
@@ -49,18 +56,9 @@ void Chamber::initXBoundaries(int chamberIndex)
 
 void Chamber::initChamber()
 {
-	for (Character *c : characterList)
-	{
-		delete c;
-	}
-	for (Potion *p : potionList)
-	{
-		delete p;
-	}
-	for (Treasure *t : treasureList)
-	{
-		delete t;
-	}
+	this->characterList.clear();
+	this->potionList.clear();
+	this->treasureList.clear();
 	this->hasPlayer = false;
 	this->hasStairs = false;
 }
@@ -70,12 +68,11 @@ void Chamber::updateCharacterList()
 	std::vector<Character*>::iterator it = this->characterList.begin();
 	while (it != characterList.end())
 	{
-		if (Floor::getInstance()->getLevel() == 2)
+		//Update Character, only if the flag Floor::stopwander is false
+		if (!Floor::getInstance()->getPlayer()->getStopWander())
 		{
-			std::cout << "in" << std::endl;
+			(*it)->update();
 		}
-		//更新Character.
-		(*it)->update();
 		//如果it指向的Character死了，则把Character从list中删去
 		if ((*it)->getIsDead()) 
 		{ 
@@ -108,6 +105,7 @@ void Chamber::updateCharacterList()
 			{
 				Floor::getInstance()->getMap()[lastY][lastX] = '.';
 			}
+			delete *it;
 			it = characterList.erase(it);
 		}
 		else 
@@ -158,6 +156,7 @@ void Chamber::updateTreasureList()
 void Chamber::addCharacter(Character *c)
 {
 	this->characterList.push_back(c);
+	std::cout << this->characterList.size() <<' '<<this->length<<' '<<this->width<< std::endl;
 	Floor::getInstance()->getMap()[c->getY()][c->getX()] = c->getDisplay();
 }
 

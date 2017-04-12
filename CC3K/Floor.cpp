@@ -7,6 +7,9 @@ using namespace std;
 
 Floor *Floor::f;
 
+/*
+	Private constructor: prevents unwanted construction
+*/
 Floor::Floor()
 {
 	this->chamberList.push_back(new Chamber(3, 3, 4, 26, 0));
@@ -18,26 +21,13 @@ Floor::Floor()
 }
 
 /*
-	当游戏开始，需要把Floor类进行初始化
-	或者：
-	当当前一层结束，需要把Floor类所有东西全部重置
-	把initFloor和restoreFloor/generateFloor分开写
+	Private destructor: prevents unwanted destruction
 */
-void Floor::initFloor()
+Floor::~Floor()
 {
-	//delete all characters, potions and treasures
-	for (Chamber *c : chamberList)
-	{
-		c->initChamber();
-	}
-	//restore map to default map
-	this->map = this->defaultMap;
-	//Ascend one level
-	this->level++;
-	//Restore player's last floor's boosts
-	this->p->restoreCurFloorBoost();
-	//Regenerate the floor
-	this->generateFloor();
+	delete p;
+	chamberList.clear();
+	delete stair;
 }
 
 /*
@@ -63,26 +53,26 @@ void Floor::randomizeObjectLocation(int &x, int &y, Chamber *&c)
 	}
 }
 
-
 /*
-	spawnPlayer()未完成
+	Selects a random x,y pair in a random chamber where stair is not contained,
+	then spawn the player inside it.
 */
 void Floor::spawnPlayer()
 {
-	//随机选择一个chamber
+	//Randomize a chamber
 	int indexChamber = rand() % this->chamberList.size();
 	Chamber *c = this->chamberList[indexChamber];
-	//当选中的Chamber里有楼梯，重新选择
+	//If the selected chamber has stairs in it, re-randomize the chamber
 	while (c->getHasStairs())
 	{
 		indexChamber = rand() % this->chamberList.size();
 		c = this->chamberList[indexChamber];
 	}
 	c->setHasPlayer(true);
-	//随机生成x,y坐标
+	//Randomize a pair of (x,y) coordinates
 	int x = c->getX() + rand() % c->getWidth();
 	int y = c->getY() + rand() % c->getLength();
-	//当生成的(x,y)在chamber里，并且map的位置上是 '.' -> 未被占用 
+	//When the randomized(x,y) is in the chamber and the position on map is '.' -> unoccupied 
 	while (!c->isInChamber(x, y) || this->map[y][x] != '.')
 	{
 		x = c->getX() + rand() % c->getWidth();
@@ -91,7 +81,6 @@ void Floor::spawnPlayer()
 	this->p->setX(x);
 	this->p->setY(y);
 	this->map[y][x] = '@';
-
 }
 
 void Floor::spawnStairs()
@@ -120,43 +109,11 @@ void Floor::spawnStairs()
 	this->map[y][x] = '>';
 }
 
-
 /*
-	Random generation of floors, according to the pseudocode outlined in the project.
-*/
-void Floor::generateFloor()
-{
-	this->spawnPlayer();
-	this->spawnStairs();
-	for (int i = 0; i<10; i++)
-	{
-		int potionIndex = rand() % 6;
-		generatePotion(potionIndex);
-	}
-	for (int i = 0; i<10; i++)
-	{
-		int randomIndex = rand() % 8;
-		if (randomIndex == 7)
-		{
-			generateDragonHoard();
-		}
-		else
-		{
-			generateGoldPile();
-		}
-	}
-	for (int i = 0; i<20; i++)
-	{
-		int enemyIndex = rand() % 6;
-		generateEnemy(enemyIndex);
-	}
-}
-
-/*
-generatePotion(int index)
-1. randomize to get a chamber to put the Potion
-2. while(true) to find the unoccupied and usable (x,y) coordinate
-3. create that Potion from the index and add that to the chamber
+	generatePotion(int index)
+	1. randomize to get a chamber to put the Potion
+	2. while(true) to find the unoccupied and usable (x,y) coordinate
+	3. create that Potion from the index and add that to the chamber
 
 */
 void Floor::generatePotion(int potionIndex)
@@ -228,6 +185,48 @@ void Floor::generateEnemy(int enemyIndex)
 	}
 }
 
+/*
+	Random generation of floors, according to the pseudocode outlined in the project.
+*/
+void Floor::generateFloor()
+{
+	this->spawnPlayer();
+	this->spawnStairs();
+	for (int i = 0; i<10; i++)
+	{
+		int potionIndex = rand() % 6;
+		generatePotion(potionIndex);
+	}
+	for (int i = 0; i<10; i++)
+	{
+		int randomIndex = rand() % 8;
+		if (randomIndex == 7)
+		{
+			generateDragonHoard();
+		}
+		else
+		{
+			generateGoldPile();
+		}
+	}
+	for (int i = 0; i<20; i++)
+	{
+		int enemyIndex = rand() % 6;
+		generateEnemy(enemyIndex);
+	}
+}
+
+std::string Floor::commandIntepreter()
+{
+	cout << "What will you do?" << endl;
+	string line;
+	getline(cin, line);
+	return line;
+}
+
+/*
+	Assures the singleton implementation
+*/
 Floor* Floor::getInstance()
 {
 	if (f == nullptr)
@@ -237,16 +236,10 @@ Floor* Floor::getInstance()
 	return f;
 }
 
-void Floor::outputFloor()
+void Floor::resetInstance()
 {
-	for (unsigned int i = 0; i < map.size(); i++)
-	{
-		for (unsigned int j = 0; j < map[0].length(); j++)
-		{
-			cout << map[i][j];
-		}
-		cout << endl;
-	}
+	delete f;
+	f = nullptr;
 }
 
 Player* Floor::getPlayer()
@@ -264,6 +257,8 @@ int Floor::getLevel()
 	return this->level;
 }
 
+
+
 void Floor::initMap(std::vector<std::string> map)
 {
 	this->defaultMap = this->map = map;
@@ -274,11 +269,20 @@ std::vector<std::string>& Floor::getMap()
 	return map;
 }
 
+/*
+	Restores the 'residual' leftover display of the character after each move
+	For instance: restore the last coordinate of the character to the original 
+				  display character.
+*/
 void Floor::restoreMapFromCoordinate(int x, int y)
 {
 	this->map[y][x] = this->defaultMap[y][x];
 }
 
+
+/*
+	A series of methods that acquire items and characters from the floor
+*/
 Character* Floor::getEnemyFromCoordinate(int x, int y)
 {
 	Chamber *chamber = nullptr;
@@ -321,12 +325,57 @@ Treasure* Floor::getTreasureFromCoordinate(int x, int y)
 	return chamber->getTreasure(x, y);
 }
 
+/*
+	Outputs the current configuration of the floor
+*/
+void Floor::outputFloor()
+{
+	for (unsigned int i = 0; i < map.size(); i++)
+	{
+		for (unsigned int j = 0; j < map[0].length(); j++)
+		{
+			cout << map[i][j];
+		}
+		cout << endl;
+	}
+}
+
+/*
+	当游戏开始，需要把Floor类进行初始化
+	或者：
+	当当前一层结束，需要把Floor类所有东西全部重置
+	把initFloor和restoreFloor/generateFloor分开写
+*/
+void Floor::initFloor()
+{
+	//delete all characters, potions and treasures
+	for (Chamber *c : chamberList)
+	{
+		c->initChamber();
+	}
+	//restore map to default map
+	this->map = this->defaultMap;
+	//Ascend one level
+	this->level++;
+	//Restore player's last floor's boosts
+	this->p->restoreCurFloorBoost();
+	//Regenerate the floor
+	this->generateFloor();
+}
+
+/*
+	Controls the update of the floor for each individual turn.
+*/
 void Floor::update()
 {
 	//如果Player已经到达当前楼层的楼梯了
 	if (p->getX() == stair->getX() && p->getY() == stair->getY())
 	{
 		this->initFloor();
+	}
+	if (this->level == 6)
+	{
+		return;
 	}
 	this->outputFloor();
 	TextPanel::outputStates();
@@ -335,6 +384,7 @@ void Floor::update()
 	{
 		c->updateChamber();
 	}
+
 	TextPanel::outputMessage();
 	system("cls");
 }

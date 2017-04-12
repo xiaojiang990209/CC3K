@@ -24,6 +24,7 @@ private:
 	void initXBoundaries(int chamberIndex);
 public:
 	Chamber(int x, int y, int length, int width, int chamberIndex);
+	~Chamber();
 	void initChamber();
 	void addCharacter(Character *c);
 	void addPotion(Potion *p);
