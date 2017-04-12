@@ -13,12 +13,6 @@ Enemy::Enemy(int x, int y, char display, std::string type, int hp, int atk, int 
 	this->isHostile = isHostile;
 }
 
-bool Enemy::findEnemy(int x, int y)
-{
-	char c = Floor::getInstance()->getMap()[y][x];
-	return c == '@';
-}
-
 bool Enemy::getIsHostile()
 {
 	return this->isHostile;
@@ -27,12 +21,6 @@ bool Enemy::getIsHostile()
 void Enemy::setIsHostile(bool isHostile)
 {
 	this->isHostile = isHostile;
-}
-
-bool Enemy::findPotion(int x, int y)
-{
-	char c =Floor::getInstance()->getMap()[y][x];
-	return c == '!';
 }
 
 bool Enemy::attackPlayer()

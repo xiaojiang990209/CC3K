@@ -6,8 +6,6 @@ class Enemy : public Character
 private:
 	bool isHostile;
 protected:
-	bool findEnemy(int x, int y);
-	bool findPotion(int x, int y);
 	virtual bool attackPlayer();
 	virtual bool drinkPotion();
 	virtual void moveRandomly();

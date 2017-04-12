@@ -8,7 +8,6 @@ Player::Player(int x, int y, std::string type, int hp, int atk, int def, bool is
 {
 	this->isVisible = isVisible;
 	this->gold = 0;
-	this->score = 0;
 	this->stopwander = false;
 	this->stopdeath = false;
 	this->quit = false;
@@ -105,11 +104,6 @@ void Player::setIsVisible(bool isVisible)
 int Player::getGold()
 {
 	return this->gold;
-}
-
-int Player::getScore()
-{
-	return this->score;
 }
 
 void Player::setGold(int gold)

@@ -15,7 +15,6 @@ protected:
 	void changeHP(int hp);
 	void changeCurFloorATKBoost(int atkBoost);
 	void changeCurFloorDEFBoost(int defBoost);
-	
 public:
 	Character(int x, int y, char display, std::string type, int hp, int atk, int def);
 	int getHP();
