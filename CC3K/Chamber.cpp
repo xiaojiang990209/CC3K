@@ -156,7 +156,6 @@ void Chamber::updateTreasureList()
 void Chamber::addCharacter(Character *c)
 {
 	this->characterList.push_back(c);
-	std::cout << this->characterList.size() <<' '<<this->length<<' '<<this->width<< std::endl;
 	Floor::getInstance()->getMap()[c->getY()][c->getX()] = c->getDisplay();
 }
 

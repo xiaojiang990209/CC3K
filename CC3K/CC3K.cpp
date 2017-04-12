@@ -5,8 +5,8 @@
 #include<iostream>
 #include<fstream>
 #include<string>
-#include<vector>
 #include"Floor.h"
+#include<ctime>
 
 using namespace std;
 
@@ -14,6 +14,7 @@ vector<string> readFile(string url);
 
 int main()
 {
+	srand(time(NULL));
 	Floor *floor = nullptr;
 	while (true)
 	{
@@ -33,6 +34,7 @@ int main()
 		case 's':
 			floor->setPlayer(new Samurai(0, 0)); break;
 		}
+		system("cls");
 
 		floor->initFloor();
 
