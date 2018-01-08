@@ -1,7 +1,10 @@
-// CC3K.cpp : Defines the entry point for the console application.
-//
+/**
+ * Revised on Jan 7, 2018.
+ * @author: Zijie Jiang
+ * Changes: Added comments
+ * 
+ */
 
-#include "stdafx.h"
 #include<iostream>
 #include<fstream>
 #include<string>
@@ -10,6 +13,14 @@
 
 using namespace std;
 
+
+/**
+ * Reads default map from file system
+ * 
+ * @param the url of the txt file storing the map
+ * @return the map as a vector of string
+ *
+ */
 vector<string> readFile(string url);
 
 int main()
@@ -34,17 +45,17 @@ int main()
 		case 's':
 			floor->setPlayer(new Samurai(0, 0)); break;
 		}
-		system("cls");
-
-		floor->initFloor();
+		system("clear");
 
 		//Initialize floor in constructor
+		floor->initFloor();
 
 		while (true)
 		{
-			//更新Floor以及Floor里的map
-			//Floor更新里有每个Chamber的更新
+			// Update Floor as well as maps within Floor
+			// Updates of Floor contain the updates of each chamber
 			floor->update();
+
 			//If player successfully reaches the stair of the fifth floor
 			if (floor->getLevel() == 6)
 			{
@@ -52,6 +63,7 @@ int main()
 				cout << "Your score is " << floor->getPlayer()->getGold() << endl;
 				break;
 			}
+
 			//Output player's death only if player dies and stopdeath is false
 			if (floor->getPlayer()->getIsDead() && !floor->getPlayer()->getStopDeath())
 			{
@@ -59,6 +71,7 @@ int main()
 				cout << "Your score is " << floor->getPlayer()->getGold() << "!" << endl;
 				break;
 			}
+
 			//If player quits game
 			if (floor->getPlayer()->getQuit() || floor->getPlayer()->getRestart())
 			{
@@ -66,16 +79,14 @@ int main()
 				break;
 			}
 		}
+
+		// If player restarts game
 		if (!floor->getPlayer()->getRestart())
 		{
 			break;
 		}
 		floor->resetInstance();
 	}
-	
-
-
-	system("pause");
 
     return 0;
 }

@@ -1,3 +1,10 @@
+/**
+ * Revised on Jan 7, 2018.
+ * @author: Zijie Jiang
+ * Changes: Added comments
+ * 
+ */
+
 #include"Chamber.h"
 #include"Floor.h"
 #include<iostream>

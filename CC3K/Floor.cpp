@@ -85,20 +85,22 @@ void Floor::spawnPlayer()
 
 void Floor::spawnStairs()
 {
-	//随机选择一个chamber
+	// Randomize a chamber
 	int indexChamber = rand() % this->chamberList.size();
 	Chamber *c = this->chamberList[indexChamber];
-	//当选中的Chamber里有Player，重新选择
+	// If the selected chamber has player in it, re-randomize 
+	// another chamber
 	while (c->getHasPlayer())
 	{
 		indexChamber = rand() % this->chamberList.size();
 		c = this->chamberList[indexChamber];
 	}
 	c->setHasStairs(true);
-	//随机生成x,y坐标
+	// Generate x,y coordinates
 	int x = c->getX() + rand() % c->getWidth();
 	int y = c->getY() + rand() % c->getLength();
-	//当生成的(x,y)在chamber里，并且map的位置上是 '.' -> 未被占用 
+	// When (x,y) is inside any chamber, or (x,y) denotes an
+	// occupied location
 	while (!c->isInChamber(x, y) || this->map[y][x] != '.')
 	{
 		x = c->getX() + rand() % c->getWidth();
@@ -340,12 +342,13 @@ void Floor::outputFloor()
 	}
 }
 
-/*
-	当游戏开始，需要把Floor类进行初始化
-	或者：
-	当当前一层结束，需要把Floor类所有东西全部重置
-	把initFloor和restoreFloor/generateFloor分开写
-*/
+/**
+  *	当游戏开始，需要把Floor类进行初始化
+  *	或者：
+  *	当当前一层结束，需要把Floor类所有东西全部重置
+  *	把initFloor和restoreFloor/generateFloor分开写
+  * 
+  */
 void Floor::initFloor()
 {
 	//delete all characters, potions and treasures
@@ -368,7 +371,7 @@ void Floor::initFloor()
 */
 void Floor::update()
 {
-	//如果Player已经到达当前楼层的楼梯了
+	// If Player has reached the stair of the current floor
 	if (p->getX() == stair->getX() && p->getY() == stair->getY())
 	{
 		this->initFloor();
@@ -386,5 +389,5 @@ void Floor::update()
 	}
 
 	TextPanel::outputMessage();
-	system("cls");
+	system("clear");
 }

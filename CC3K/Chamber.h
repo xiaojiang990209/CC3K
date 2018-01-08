@@ -1,11 +1,17 @@
-#pragma once
+/**
+ * Revised on Jan 7, 2018.
+ * @author: Zijie Jiang
+ * Changes: Added comments
+ * 
+ */
+
 #include"Character.h"
 #include"Entity.h"
-
 #include"Potion.h"
 #include"Treasure.h"
 #include<vector>
 #include<map>
+
 
 class Chamber:public Entity
 {
